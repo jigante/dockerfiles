@@ -21,15 +21,16 @@ export JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(which javac || which jav
 export ES_JAVA_OPTS="-Des.cgroups.hierarchy.override=/ $ES_JAVA_OPTS"
 
 # Temporary workaround to install all needed Elasticsearch plugins for multi platforms image buildings
-if ! elasticsearch-plugin list -s | grep -q analysis-icu; then
-    elasticsearch-plugin install -s analysis-icu
-fi
-if ! elasticsearch-plugin list -s | grep -q analysis-smartcn; then
-    elasticsearch-plugin install -s analysis-smartcn
-fi
-if ! elasticsearch-plugin list -s | grep -q analysis-kuromoji; then
-    elasticsearch-plugin install -s analysis-kuromoji
-fi
+ES_PLUGINS=()
+ES_PLUGINS+=(analysis-icu)
+ES_PLUGINS+=(analysis-smartcn)
+ES_PLUGINS+=(analysis-kuromoji)
+for plugin in "${ES_PLUGINS[@]}"
+  do
+    if ! elasticsearch-plugin list -s | grep -q "${plugin}"; then
+      elasticsearch-plugin install -s "${plugin}"
+    fi
+  done
 
 # Determine if x-pack is enabled
 if elasticsearch-plugin list -s | grep -q x-pack; then
