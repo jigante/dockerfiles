@@ -25,11 +25,11 @@ ES_PLUGINS+=(analysis-icu)
 ES_PLUGINS+=(analysis-smartcn)
 ES_PLUGINS+=(analysis-kuromoji)
 for plugin in "${ES_PLUGINS[@]}"
-  do
+do
     if ! elasticsearch-plugin list -s | grep -q "${plugin}"; then
       elasticsearch-plugin install -s "${plugin}"
     fi
-  done
+done
 
 # Determine if x-pack is enabled
 if elasticsearch-plugin list -s | grep -q x-pack; then
